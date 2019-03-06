@@ -7,11 +7,11 @@
 /.idea
 .c9/
 *.launch
-.settings/
 *.sublime-workspace
 .metadata
 /RemoteSystemsTempFiles
 /WheelGame
+/WheelGame.iml
 
 # IDE - VSCode
 .vscode/*
