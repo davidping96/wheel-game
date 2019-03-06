@@ -15,10 +15,10 @@ public class SimplePlayer implements Player {
 
     private BetType betType;
 
-    public SimplePlayer(String playerId, String playerName, int points) {
+    public SimplePlayer(String playerId, String playerName, int initialPoints) {
         this.playerId = playerId;
         this.playerName = playerName;
-        this.points = points;
+        this.points = initialPoints;
     }
 
     @Override
