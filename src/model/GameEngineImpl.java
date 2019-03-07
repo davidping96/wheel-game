@@ -1,14 +1,17 @@
 package model;
 
 import model.enumeration.BetType;
+import model.enumeration.Color;
 import model.interfaces.GameEngine;
 import model.interfaces.Player;
 import model.interfaces.Slot;
+import view.GameEngineCallbackImpl;
 import view.interfaces.GameEngineCallback;
 
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
+import java.util.concurrent.ThreadLocalRandom;
 
 public class GameEngineImpl implements GameEngine {
 
@@ -16,8 +19,51 @@ public class GameEngineImpl implements GameEngine {
 
     private List<GameEngineCallback> gameEngineCallbacks = new ArrayList<>();
 
+    private static final List<Slot> wheelSlots = new ArrayList<>();
+
+    static {
+        wheelSlots.add(new SlotImpl(0, Color.GREEN00, 0));
+        wheelSlots.add(new SlotImpl(1, Color.RED, 27));
+        wheelSlots.add(new SlotImpl(2, Color.BLACK, 10));
+        wheelSlots.add(new SlotImpl(3, Color.RED, 25));
+        wheelSlots.add(new SlotImpl(4, Color.BLACK, 29));
+        wheelSlots.add(new SlotImpl(5, Color.RED, 12));
+        wheelSlots.add(new SlotImpl(6, Color.BLACK, 8));
+        wheelSlots.add(new SlotImpl(7, Color.RED, 19));
+        wheelSlots.add(new SlotImpl(8, Color.BLACK, 31));
+        wheelSlots.add(new SlotImpl(9, Color.RED, 18));
+        wheelSlots.add(new SlotImpl(10, Color.BLACK, 6));
+        wheelSlots.add(new SlotImpl(11, Color.RED, 21));
+        wheelSlots.add(new SlotImpl(12, Color.BLACK, 33));
+        wheelSlots.add(new SlotImpl(13, Color.RED, 16));
+        wheelSlots.add(new SlotImpl(14, Color.BLACK, 4));
+        wheelSlots.add(new SlotImpl(15, Color.RED, 23));
+        wheelSlots.add(new SlotImpl(16, Color.BLACK, 35));
+        wheelSlots.add(new SlotImpl(17, Color.RED, 14));
+        wheelSlots.add(new SlotImpl(18, Color.BLACK, 2));
+        wheelSlots.add(new SlotImpl(19, Color.GREEN0, 0));
+        wheelSlots.add(new SlotImpl(20, Color.BLACK, 28));
+        wheelSlots.add(new SlotImpl(21, Color.RED, 9));
+        wheelSlots.add(new SlotImpl(22, Color.BLACK, 26));
+        wheelSlots.add(new SlotImpl(23, Color.RED, 30));
+        wheelSlots.add(new SlotImpl(24, Color.BLACK, 11));
+        wheelSlots.add(new SlotImpl(25, Color.RED, 7));
+        wheelSlots.add(new SlotImpl(26, Color.BLACK, 20));
+        wheelSlots.add(new SlotImpl(27, Color.RED, 32));
+        wheelSlots.add(new SlotImpl(28, Color.BLACK, 17));
+        wheelSlots.add(new SlotImpl(29, Color.RED, 5));
+        wheelSlots.add(new SlotImpl(30, Color.BLACK, 22));
+        wheelSlots.add(new SlotImpl(31, Color.RED, 34));
+        wheelSlots.add(new SlotImpl(32, Color.BLACK, 15));
+        wheelSlots.add(new SlotImpl(33, Color.RED, 3));
+        wheelSlots.add(new SlotImpl(34, Color.BLACK, 24));
+        wheelSlots.add(new SlotImpl(35, Color.RED, 36));
+        wheelSlots.add(new SlotImpl(36, Color.BLACK, 13));
+        wheelSlots.add(new SlotImpl(37, Color.RED, 1));
+    }
+
     public GameEngineImpl() {
-        //Empty for now
+        //ta
     }
 
     /**
@@ -48,6 +94,23 @@ public class GameEngineImpl implements GameEngine {
      */
     @Override
     public void spin(int initialDelay, int finalDelay, int delayIncrement) {
+//        int currentPosition = ThreadLocalRandom.current().nextInt(0, Slot.WHEEL_SIZE);
+        int currentPosition = 0;
+        int delay = initialDelay;
+        GameEngineCallback gameEngineCallback = new GameEngineCallbackImpl();
+
+        while (delay < finalDelay) {
+            gameEngineCallback.nextSlot(wheelSlots.get(currentPosition), this);
+
+            delay += delayIncrement;
+            if (currentPosition == Slot.WHEEL_SIZE - 1) {
+                currentPosition = 0;
+            } else {
+                currentPosition++;
+            }
+        }
+
+        gameEngineCallback.result(wheelSlots.get(currentPosition), this);
 
     }
 
@@ -62,21 +125,19 @@ public class GameEngineImpl implements GameEngine {
     }
 
     /**
-     *  <b>NOTE:</b> playerID is unique and if another player with same id is added
-     *  it replaces the previous player
+     * <b>NOTE:</b> playerID is unique and if another player with same id is added
+     * it replaces the previous player
      *
      * @param player - to add to game
      */
     @Override
     public void addPlayer(Player player) {
-        Player existingPlayer = null;
-        for(Player p : players) {
-            if (p.getPlayerId().equals(player.getPlayerId())) {
-                existingPlayer = player;
-            }
+        Player existingPlayer = this.getPlayer(player.getPlayerId());
+        if (existingPlayer != null) {
+            players.set(players.indexOf(existingPlayer), player);
+        } else {
+            players.add(player);
         }
-        players.remove(existingPlayer);
-        this.players.add(player);
     }
 
     /**
@@ -85,6 +146,11 @@ public class GameEngineImpl implements GameEngine {
      */
     @Override
     public Player getPlayer(String id) {
+        for (Player player : players) {
+            if (player.getPlayerId().equals(id)) {
+                return player;
+            }
+        }
         return null;
     }
 
@@ -94,14 +160,19 @@ public class GameEngineImpl implements GameEngine {
      */
     @Override
     public boolean removePlayer(Player player) {
-        return false;
+        Player existingPlayer = this.getPlayer(player.getPlayerId());
+        if (existingPlayer != null) {
+            players.remove(player);
+            return true;
+        } else {
+            return false;
+        }
     }
 
     /**
-     * @param gameEngineCallback
-     * <pre> a client specific implementation of GameEngineCallback used to perform display updates etc.
+     * @param gameEngineCallback <pre> a client specific implementation of GameEngineCallback used to perform display updates etc.
      * <b>NOTE:</b> you will use a different implementation of the GameEngineCallback
-     *       for the console (assignment 1) and GUI (assignment 2) versions</pre>
+     * for the console (assignment 1) and GUI (assignment 2) versions</pre>
      * @see view.interfaces.GameEngineCallback
      */
     @Override
@@ -125,14 +196,15 @@ public class GameEngineImpl implements GameEngine {
      */
     @Override
     public Collection<Player> getAllPlayers() {
-        return null;
+        //check this
+        return this.players;
     }
 
     /**
      * the implementation should make appropriate calls on the Player to place the bet and set bet type
      *
-     * @param player - the Player who is placing the bet
-     * @param bet - the bet in points
+     * @param player  - the Player who is placing the bet
+     * @param bet     - the bet in points
      * @param betType - the type of bet (red, black or either zero)
      * @return true - if bet is greater than 0 and player had sufficient points to place the bet
      */
@@ -153,6 +225,6 @@ public class GameEngineImpl implements GameEngine {
      */
     @Override
     public Collection<Slot> getWheelSlots() {
-        return null;
+        return wheelSlots;
     }
 }

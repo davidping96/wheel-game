@@ -15,29 +15,34 @@ import view.interfaces.GameEngineCallback;
  * @see view.interfaces.GameEngineCallback
  * 
  */
-public class GameEngineCallbackImpl implements GameEngineCallback
-{
+public class GameEngineCallbackImpl implements GameEngineCallback {
    private static final Logger logger = Logger.getLogger(GameEngineCallback.class.getName());
 
-   public GameEngineCallbackImpl()
-   {
+   public GameEngineCallbackImpl() {
       // FINE shows wheel spinning output, INFO only shows result
       logger.setLevel(Level.FINE);
    }
 
    @Override
-   public void nextSlot(Slot slot, GameEngine engine)
-   {
+   public void nextSlot(Slot slot, GameEngine engine) {
       // intermediate results logged at Level.FINE
-      logger.log(Level.FINE, "Intermediate data to log .. String.format() is good here!");
+//      logger.log(Level.FINE, "Intermediate data to log .. String.format() is good here!");
+
+      logger.log(Level.FINE, "1");
+
+
+
+
       // TODO: complete this method to log intermediate results
    }
 
    @Override
-   public void result(Slot result, GameEngine engine)
-   {
+   public void result(Slot result, GameEngine engine) {
       // final results logged at Level.INFO
-      logger.log(Level.INFO, "Result data to log .. String.format() is good here!");
+//      logger.log(Level.INFO, "Result data to log .. String.format() is good here!");
+
+      logger.log(Level.INFO, "2");
+
       // TODO: complete this method to log results
    }
 }
