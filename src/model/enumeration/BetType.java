@@ -13,26 +13,33 @@ public enum BetType {
     RED {
         @Override
         public void applyWinLoss(Player player, Slot winSlot) {
-            // TODO implementation
-            // 18/38
+            if (winSlot.getColor() == Color.RED) {
+                player.setPoints(player.getPoints() + player.getBet());
+            } else {
+                player.setPoints(player.getPoints() - player.getBet());
+            }
         }
     },
     BLACK {
         @Override
         public void applyWinLoss(Player player, Slot winSlot) {
-            // TODO implementation
-            // 18/38
+            if (winSlot.getColor() == Color.BLACK) {
+                player.setPoints(player.getPoints() + player.getBet());
+            } else {
+                player.setPoints(player.getPoints() - player.getBet());
+            }
         }
     },
     ZEROS {
         @Override
         public void applyWinLoss(Player player, Slot winSlot) {
-            // TODO implementation
-            // 2/38
+            if (winSlot.getColor() == Color.GREEN0 || winSlot.getColor() == Color.GREEN00) {
+                player.setPoints(player.getPoints() + (Slot.WHEEL_SIZE / 2 * player.getBet()));
+            } else {
+                player.setPoints(player.getPoints() - player.getBet());
+            }
         }
     };
-
-    // TODO finish this class with other enum constants
 
     /**
      * This method is to be overridden for each bet type<br>
