@@ -73,17 +73,17 @@ public class SlotImpl implements Slot {
      */
     @Override
     public boolean equals(Object slot) {
-        return (slot instanceof SlotImpl && this.equals((SlotImpl)slot));
+        return (slot instanceof SlotImpl && this.equals((SlotImpl) slot));
     }
 
     /**
      * <b>NOTE:</b> if equals() is true then generated hashCode should also be equal
      *
      * @return - generated hash code (used by various JCF Collections)
-     *
+     * <p>
      * The uniqueness of a slot is determined by the number and the color,
      * (as seen above in the equals(Slot slot) method).
-     *
+     * <p>
      * To handle the scenario where a slot has the same number but a
      * different color we must also take the color into account when
      * generating the hash code.

@@ -60,6 +60,7 @@ public class GameEngineImpl implements GameEngine {
             while (delay < finalDelay) {
                 gameEngineCallback.nextSlot(wheelSlots.get(currentPosition), this);
                 delay += delayIncrement;
+                // After reaching the slot on the last position, reset to the first slot
                 if (currentPosition == Slot.WHEEL_SIZE - 1) {
                     currentPosition = 0;
                 } else {
@@ -189,4 +190,5 @@ public class GameEngineImpl implements GameEngine {
     public Collection<Slot> getWheelSlots() {
         return wheelSlots;
     }
+
 }
