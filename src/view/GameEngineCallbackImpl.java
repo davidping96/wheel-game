@@ -1,10 +1,10 @@
 package view;
 
-import java.util.ArrayList;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import model.interfaces.GameEngine;
+import model.interfaces.Player;
 import model.interfaces.Slot;
 import view.interfaces.GameEngineCallback;
 
@@ -12,7 +12,7 @@ import view.interfaces.GameEngineCallback;
  * Skeleton/Partial example implementation of GameEngineCallback showing Java logging behaviour
  *
  * @author Caspar Ryan
- * @see view.interfaces.GameEngineCallback
+ * @see GameEngineCallback
  */
 public class GameEngineCallbackImpl implements GameEngineCallback {
     private static final Logger logger = Logger.getLogger(GameEngineCallback.class.getName());
@@ -38,9 +38,9 @@ public class GameEngineCallbackImpl implements GameEngineCallback {
 
         StringBuilder stringBuilder = new StringBuilder();
 
-        for (int i = 0; i < engine.getAllPlayers().size(); i++) {
+        for (Player player: engine.getAllPlayers()) {
             stringBuilder.append("\n");
-            stringBuilder.append(((ArrayList) engine.getAllPlayers()).get(i).toString());
+            stringBuilder.append(player.toString());
         }
 
         logger.log(Level.INFO, stringBuilder.toString());

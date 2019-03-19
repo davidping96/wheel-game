@@ -60,6 +60,7 @@ public class GameEngineImpl implements GameEngine {
             while (delay < finalDelay) {
                 gameEngineCallback.nextSlot(wheelSlots.get(currentPosition), this);
                 delay += delayIncrement;
+                // After reaching the slot on the last position, reset to the first slot
                 if (currentPosition == Slot.WHEEL_SIZE - 1) {
                     currentPosition = 0;
                 } else {
@@ -131,7 +132,7 @@ public class GameEngineImpl implements GameEngine {
      * @param gameEngineCallback <pre> a client specific implementation of GameEngineCallback used to perform display updates etc.
      * <b>NOTE:</b> you will use a different implementation of the GameEngineCallback
      * for the console (assignment 1) and GUI (assignment 2) versions</pre>
-     * @see view.interfaces.GameEngineCallback
+     * @see GameEngineCallback
      */
     @Override
     public void addGameEngineCallback(GameEngineCallback gameEngineCallback) {
@@ -141,7 +142,7 @@ public class GameEngineImpl implements GameEngine {
     /**
      * @param gameEngineCallback - instance to be removed if no longer needed
      * @return true - if the gameEngineCallback existed
-     * @see view.interfaces.GameEngineCallback
+     * @see GameEngineCallback
      */
     @Override
     public boolean removeGameEngineCallback(GameEngineCallback gameEngineCallback) {
@@ -150,7 +151,7 @@ public class GameEngineImpl implements GameEngine {
 
     /**
      * @return - an unmodifiable collection (or a shallow copy) of all Players
-     * @see model.interfaces.Player
+     * @see Player
      */
     @Override
     public Collection<Player> getAllPlayers() {
@@ -183,10 +184,11 @@ public class GameEngineImpl implements GameEngine {
      * i.e. don't "reinvent the wheel" so to speak :)</pre>
      *
      * @return any java.util.Collection of Slot
-     * @see model.interfaces.Slot
+     * @see Slot
      */
     @Override
     public Collection<Slot> getWheelSlots() {
         return wheelSlots;
     }
+
 }
