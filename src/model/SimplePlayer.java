@@ -38,6 +38,7 @@ public class SimplePlayer implements Player {
     }
 
     /**
+     *
      * @return - number of points from setPoints()
      */
     @Override
