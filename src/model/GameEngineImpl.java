@@ -7,10 +7,7 @@ import model.interfaces.Player;
 import model.interfaces.Slot;
 import view.interfaces.GameEngineCallback;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.List;
+import java.util.*;
 import java.util.concurrent.ThreadLocalRandom;
 
 public class GameEngineImpl implements GameEngine {
@@ -155,7 +152,7 @@ public class GameEngineImpl implements GameEngine {
      */
     @Override
     public Collection<Player> getAllPlayers() {
-        return this.players;
+        return Collections.unmodifiableList(this.players);
     }
 
     /**
