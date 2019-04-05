@@ -12,7 +12,7 @@ import java.util.concurrent.ThreadLocalRandom;
 
 public class GameEngineImpl implements GameEngine {
 
-    private List<Player> players = new ArrayList<>();
+    private Map<String, Player> players = new LinkedHashMap<>();
 
     private List<GameEngineCallback> gameEngineCallbacks = new ArrayList<>();
 
@@ -75,7 +75,8 @@ public class GameEngineImpl implements GameEngine {
      */
     @Override
     public void calculateResult(Slot winningSlot) {
-        for (Player player : this.players) {
+        for (Map.Entry<String, Player> playerEntry : this.players.entrySet()) {
+            Player player = playerEntry.getValue();
             player.getBetType().applyWinLoss(player, winningSlot);
         }
     }
@@ -88,12 +89,7 @@ public class GameEngineImpl implements GameEngine {
      */
     @Override
     public void addPlayer(Player player) {
-        Player existingPlayer = this.getPlayer(player.getPlayerId());
-        if (existingPlayer != null) {
-            players.set(players.indexOf(existingPlayer), player);
-        } else {
-            players.add(player);
-        }
+        this.players.put(player.getPlayerId(), player);
     }
 
     /**
@@ -102,12 +98,7 @@ public class GameEngineImpl implements GameEngine {
      */
     @Override
     public Player getPlayer(String id) {
-        for (Player player : players) {
-            if (player.getPlayerId().equals(id)) {
-                return player;
-            }
-        }
-        return null;
+        return this.players.get(id);
     }
 
     /**
@@ -116,13 +107,7 @@ public class GameEngineImpl implements GameEngine {
      */
     @Override
     public boolean removePlayer(Player player) {
-        Player existingPlayer = this.getPlayer(player.getPlayerId());
-        if (existingPlayer != null) {
-            players.remove(player);
-            return true;
-        } else {
-            return false;
-        }
+        return this.players.remove(player.getPlayerId()) != null;
     }
 
     /**
@@ -152,7 +137,7 @@ public class GameEngineImpl implements GameEngine {
      */
     @Override
     public Collection<Player> getAllPlayers() {
-        return Collections.unmodifiableList(this.players);
+        return Collections.unmodifiableList(List.copyOf(this.players.values()));
     }
 
     /**
