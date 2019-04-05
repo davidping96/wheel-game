@@ -137,7 +137,7 @@ public class GameEngineImpl implements GameEngine {
      */
     @Override
     public Collection<Player> getAllPlayers() {
-        return Collections.unmodifiableList(List.copyOf(this.players.values()));
+        return Collections.unmodifiableList(new ArrayList<>(this.players.values()));
     }
 
     /**
