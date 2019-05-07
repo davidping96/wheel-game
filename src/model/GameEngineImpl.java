@@ -20,7 +20,6 @@ public class GameEngineImpl implements GameEngine {
     private static final List<Slot> wheelSlots = new ArrayList<>(Arrays.asList(new SlotImpl(0, Color.GREEN00, 0), new SlotImpl(1, Color.RED, 27), new SlotImpl(2, Color.BLACK, 10), new SlotImpl(3, Color.RED, 25), new SlotImpl(4, Color.BLACK, 29), new SlotImpl(5, Color.RED, 12), new SlotImpl(6, Color.BLACK, 8), new SlotImpl(7, Color.RED, 19), new SlotImpl(8, Color.BLACK, 31), new SlotImpl(9, Color.RED, 18), new SlotImpl(10, Color.BLACK, 6), new SlotImpl(11, Color.RED, 21), new SlotImpl(12, Color.BLACK, 33), new SlotImpl(13, Color.RED, 16), new SlotImpl(14, Color.BLACK, 4), new SlotImpl(15, Color.RED, 23), new SlotImpl(16, Color.BLACK, 35), new SlotImpl(17, Color.RED, 14), new SlotImpl(18, Color.BLACK, 2), new SlotImpl(19, Color.GREEN0, 0), new SlotImpl(20, Color.BLACK, 28), new SlotImpl(21, Color.RED, 9), new SlotImpl(22, Color.BLACK, 26), new SlotImpl(23, Color.RED, 30), new SlotImpl(24, Color.BLACK, 11), new SlotImpl(25, Color.RED, 7), new SlotImpl(26, Color.BLACK, 20), new SlotImpl(27, Color.RED, 32), new SlotImpl(28, Color.BLACK, 17), new SlotImpl(29, Color.RED, 5), new SlotImpl(30, Color.BLACK, 22), new SlotImpl(31, Color.RED, 34), new SlotImpl(32, Color.BLACK, 15), new SlotImpl(33, Color.RED, 3), new SlotImpl(34, Color.BLACK, 24), new SlotImpl(35, Color.RED, 36), new SlotImpl(36, Color.BLACK, 13), new SlotImpl(37, Color.RED, 1)));
 
     public GameEngineImpl() {
-        // Collection for players and callbacks are defined and they should be added after object is created
     }
 
     /**
@@ -51,19 +50,27 @@ public class GameEngineImpl implements GameEngine {
      */
     @Override
     public void spin(int initialDelay, int finalDelay, int delayIncrement) {
-        for (GameEngineCallback gameEngineCallback : this.gameEngineCallbacks) {
-            int currentPosition = ThreadLocalRandom.current().nextInt(0, Slot.WHEEL_SIZE);
-            int delay = initialDelay;
-            while (delay < finalDelay) {
-                gameEngineCallback.nextSlot(wheelSlots.get(currentPosition), this);
-                delay += delayIncrement;
-                // After reaching the slot on the last position, reset to the first slot
-                if (currentPosition == Slot.WHEEL_SIZE - 1) {
-                    currentPosition = 0;
-                } else {
-                    currentPosition++;
-                }
+        int currentPosition = ThreadLocalRandom.current().nextInt(0, Slot.WHEEL_SIZE);
+        int delay = initialDelay;
+        while (delay < finalDelay) {
+            try {
+                Thread.sleep(delay);
+            } catch (Exception e) {
+                e.printStackTrace();
             }
+            for (GameEngineCallback gameEngineCallback : this.gameEngineCallbacks) {
+                gameEngineCallback.nextSlot(wheelSlots.get(currentPosition), this);
+            }
+            delay += delayIncrement;
+            // After reaching the slot on the last position, reset to the first slot
+            if (currentPosition == Slot.WHEEL_SIZE - 1) {
+                currentPosition = 0;
+            } else {
+                currentPosition++;
+            }
+        }
+        this.calculateResult(wheelSlots.get(currentPosition));
+        for (GameEngineCallback gameEngineCallback : this.gameEngineCallbacks) {
             gameEngineCallback.result(wheelSlots.get(currentPosition), this);
         }
     }
@@ -77,7 +84,10 @@ public class GameEngineImpl implements GameEngine {
     public void calculateResult(Slot winningSlot) {
         for (Map.Entry<String, Player> playerEntry : this.players.entrySet()) {
             Player player = playerEntry.getValue();
-            player.getBetType().applyWinLoss(player, winningSlot);
+            if (player != null && player.getBetType() != null) {
+                player.getBetType().applyWinLoss(player, winningSlot);
+                player.resetBet();
+            }
         }
     }
 
@@ -112,8 +122,8 @@ public class GameEngineImpl implements GameEngine {
 
     /**
      * @param gameEngineCallback <pre> a client specific implementation of GameEngineCallback used to perform display updates etc.
-     * <b>NOTE:</b> you will use a different implementation of the GameEngineCallback
-     * for the console (assignment 1) and GUI (assignment 2) versions</pre>
+     *                           <b>NOTE:</b> you will use a different implementation of the GameEngineCallback
+     *                           for the console (assignment 1) and GUI (assignment 2) versions</pre>
      * @see view.interfaces.GameEngineCallback
      */
     @Override

@@ -15,10 +15,18 @@ public class SimplePlayer implements Player {
 
     private BetType betType;
 
+    private static int uniqueId = 0;
+
     public SimplePlayer(String playerId, String playerName, int initialPoints) {
         this.playerId = playerId;
         this.playerName = playerName;
         this.points = initialPoints;
+    }
+
+    public SimplePlayer(String playerName, int points) {
+        this.playerName = playerName;
+        this.points = points;
+        this.playerId = String.valueOf(uniqueId++);
     }
 
     /**

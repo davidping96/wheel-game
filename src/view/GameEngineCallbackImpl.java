@@ -31,18 +31,13 @@ public class GameEngineCallbackImpl implements GameEngineCallback {
     @Override
     public void result(Slot result, GameEngine engine) {
         // final results logged at Level.INFO
-        engine.calculateResult(result);
-
-        logger.log(Level.INFO, String.format("RESULT=%s", result.toString()));
-        logger.log(Level.INFO, "FINAL PLAYER POINT BALANCES");
-
         StringBuilder stringBuilder = new StringBuilder();
-
-        for (Player player: engine.getAllPlayers()) {
+        for (Player player : engine.getAllPlayers()) {
             stringBuilder.append("\n");
             stringBuilder.append(player.toString());
         }
-
+        logger.log(Level.INFO, String.format("RESULT=%s", result.toString()));
+        logger.log(Level.INFO, "FINAL PLAYER POINT BALANCES");
         logger.log(Level.INFO, stringBuilder.toString());
     }
 }
